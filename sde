@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Copyright 2024 Erik Ben Heckman <erik@heckman.ca>
+# SPDX-License-Identifier: MIT
+
+# sde 0.0.1
+
+# Map regex matches by executing a command or function
+#
+# Usage: sde <REGEX> <COMMAND>
+#        sde [--help|-h|--version|-V]
+#
+# Reads from STDIN and writes to STDOUT, replacing each <OCCURENCE> of <REGEX>
+# with the output when executing '<COMMAND> <OCCURENCE>'.
+# - <COMMAND> is an executable command, or a bash function that has been
+#   exported with 'export -f'. Note that a function will only work in this
+#   way if /bin/sh is actually bash, as it is for macOS.
+# - <REGEX> is a regular expression as interpreted by 'awk'.
+# - <OCCURENCE> is wrapped in single quotes, single quotes within <OCCURENCE>
+#   are quoted separately with double quotes.
+#
+#
+#--take care editing the header, it's parsed:
+about(){ awk '/^$/{f=1}!f{next}/^.[^ ]/{exit}{print}' "$0" | cut -c3-;}
+usage(){ awk '/Usage/{f=1}!f{next}/^#$/{exit}{print}' "$0" | cut -c3-;}
+version(){ grep -iom1 'sde.*$' "$0" ;}
+
+die(){ echo "$1"; usage; exit 1;}>&2
+
+case "$1" in -V|--version) version ;; -h|--help) about ;; *)
+	[[ -n "$2" ]] || die "Missing mandatory arguments."
+	type -t "$2" >/dev/null || die "Command not found: $2"
+	awk -v regex="$1" -v command="$2" '{
+		while (match($0, regex)) {
+			arg = substr($0, RSTART, RLENGTH)
+			gsub(/'"'"'/, "'"'"'\"'"'"'\"'"'"'", arg)
+			cmd = command " '"'"'" arg "'"'"'"
+			cmd | getline out
+			close(cmd)
+			printf("%s%s", substr($0,1,RSTART-1), out)
+			$0 = substr($0,RSTART+RLENGTH)
+		}
+		print
+	}';;
+esac
