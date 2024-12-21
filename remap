@@ -13,7 +13,7 @@
 #
 # Reads from STDIN and writes to STDOUT, replacing every match of the regular
 # expression with the result of <SHELL-STATEMENT> after replacing all
-# occurrences of $& in the <SHELL-STATEMENT> with the contents of the match.
+# occurrences of $& in <SHELL-STATEMENT> with the contents of the match.
 #
 # If <SHELL-STATEMENT> is omitted, then matches are deleted.
 #
@@ -35,5 +35,5 @@ case "$1" in
 -h|--help) usage ;;
 *)
 	perl -pe 's/'"$1"'/`'"$2"'`/ge'
-	;;m p
+	;;
 esac
