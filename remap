@@ -27,8 +27,8 @@
 #--take care editing the header, it's parsed:
 # usage uses everything between 'Usage' and the first blank line that follows
 usage(){ <"$0" sed -E '/Usage/,/^ *$/!d;/^ *$/q;s/^#( |$)//' ; }
-# version uses the third field of the first line containing '# sde'
-version(){ awk '/^# *sde/{print $3;exit}' "$0" ; }
+# version uses the third field of the first line containing '# remap'
+version(){ awk '/^# *remap/{print $3;exit}' "$0" ; }
 
 case "$1" in
 --version) version ;;
