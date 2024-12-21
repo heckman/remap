@@ -1,4 +1,4 @@
-# sde
+# remap
 
 Map each regular-expression match with the result of a command.
 
@@ -8,15 +8,15 @@ but should work on any POSIX system with `perl` installed.
 It's just a wrapper for a _perl_ one-liner
 that I can't remember when I need it.
 
-The name `sde` meant something to me once,
-but I can't remember what anymore.
-It's likely a play on "sed".
-I'll likely change it to something else at some point.
+This script used to named `sde`,
+likely a play on "sed",
+but I couldn't remember why I named it that,
+so I renamed it to `remap`, which makes more sense.
 
 ## Usage
 
 ```shell
-sde <REGEX> [<COMMAND-STATEMENT>]
+remap <REGEX> [<COMMAND-STATEMENT>]
 ```
 
 ## Installation

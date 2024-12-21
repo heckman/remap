@@ -3,13 +3,13 @@
 # https://git.heckman.ca/sde  SPDX-License-Identifier: MIT
 
 
-# sde  v0.2.0
+# remap  v0.3.0  (formerly sde)
 
 
 # Map each regular-expression match with the result of a command.
 
-# Usage: sde <REGEX> [<COMMAND-STATEMENT>]
-#        sde [-h|--help|--version]
+# Usage: remap <REGEX> [<COMMAND-STATEMENT>]
+#        remap [-h|--help|--version]
 #
 # Reads from STDIN and writes to STDOUT, replacing every match of the regular
 # expression with the result of <COMMAND-STATEMENT> after replacing all
