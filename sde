@@ -6,7 +6,7 @@
 # sde  v0.2.0
 
 
-# Map each regular-expression match with `<COMMAND> <MATCH>`
+# Map each regular-expression match with the result of a command.
 
 # Usage: sde <REGEX> [<COMMAND-STATEMENT>]
 #        sde [-h|--help|--version]
