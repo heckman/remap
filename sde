@@ -3,26 +3,25 @@
 # https://git.heckman.ca/sde  SPDX-License-Identifier: MIT
 
 
-# sde  v0.1.0
+# sde  v0.2.0
 
 
 # Map each regular-expression match with `<COMMAND> <MATCH>`
 
-# Usage: sde <REGEX> <COMMAND>
+# Usage: sde <REGEX> [<COMMAND-STATEMENT>]
 #        sde [-h|--help|--version]
 #
-# Reads from STDIN and writes to STDOUT, replacing each regular expression MATCH
-# with the output when executing `<COMMAND> '<MATCH>'`.
+# Reads from STDIN and writes to STDOUT, replacing every match of the regular
+# expression with the result of <COMMAND-STATEMENT> after replacing all
+# occurrences of $& in the <COMMAND-STATEMENT> with the contents of the match.
 #
-#   - <COMMAND> is an executable command.
-#   - <REGEX> is a regular expression as interpreted by 'awk'.
-#   - note that when calling <COMMAND>, the argument <MATCH> is wrapped in
-#     single quotes, single quotes within <MATCH> are quoted separately with
-#     double quotes, spaceship style, i.e. MA'TCH => 'MA'"'"'TCH'.
-
-# Note: In some situations, a function may be used for <COMMAND>,
-# provided it has been exported from a bash environment with 'export -f',
-# and provided that /bin/sh is actually bash, as it is for macOS.
+# If <COMMAND-STATEMENT> is omitted, then matches are deleted.
+#
+# The <COMMAND-STATEMENT> is typically interpreted by /bin/sh on Unix-like
+# systems, or whatever perl is configured to use as the default system shell.
+#
+# If this script is being called from bash, and /bin/sh invokes bash being run
+# in POSIX mode, then <COMMAND-STATEMENT> may include exported functions.
 # This functionality is not very well tested.
 
 #--take care editing the header, it's parsed:
@@ -31,21 +30,10 @@ usage(){ <"$0" sed -E '/Usage/,/^ *$/!d;/^ *$/q;s/^#( |$)//' ; }
 # version uses the third field of the first line containing '# sde'
 version(){ awk '/^# *sde/{print $3;exit}' "$0" ; }
 
-die(){ echo "$1"; usage; exit 1;}>&2
-
-case "$1" in -V|--version) version ;; -h|--help) usage ;; *)
-	[[ -n "$2" ]] || die "Missing mandatory arguments."
-	type -t "$2" >/dev/null || die "Command not found: $2"
-	awk -v regex="$1" -v command="$2" '{
-		while (match($0, regex)) {
-			arg = substr($0, RSTART, RLENGTH)
-			gsub(/'"'"'/, "'"'"'\"'"'"'\"'"'"'", arg)
-			cmd = command " '"'"'" arg "'"'"'"
-			cmd | getline out
-			close(cmd)
-			printf("%s%s", substr($0,1,RSTART-1), out)
-			$0 = substr($0,RSTART+RLENGTH)
-		}
-		print
-	}';;
+case "$1" in
+--version) version ;;
+-h|--help) usage ;;
+*)
+	perl -pe 's/'"$1"'/`'"$2"'`/ge'
+	;;
 esac
