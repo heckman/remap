@@ -1,32 +1,39 @@
 #!/usr/bin/env bash
 # Copyright 2024 Erik Ben Heckman <erik@heckman.ca>
-# SPDX-License-Identifier: MIT
+# https://git.heckman.ca/sde  SPDX-License-Identifier: MIT
 
-# sde 0.0.1
 
-# Map regex matches by executing a command or function
-#
+# sde  v0.1.0
+
+
+# Map each regular-expression match with `<COMMAND> <MATCH>`
+
 # Usage: sde <REGEX> <COMMAND>
-#        sde [--help|-h|--version|-V]
+#        sde [-h|--help|--version]
 #
-# Reads from STDIN and writes to STDOUT, replacing each <OCCURENCE> of <REGEX>
-# with the output when executing '<COMMAND> <OCCURENCE>'.
-# - <COMMAND> is an executable command, or a bash function that has been
-#   exported with 'export -f'. Note that a function will only work in this
-#   way if /bin/sh is actually bash, as it is for macOS.
-# - <REGEX> is a regular expression as interpreted by 'awk'.
-# - <OCCURENCE> is wrapped in single quotes, single quotes within <OCCURENCE>
-#   are quoted separately with double quotes.
+# Reads from STDIN and writes to STDOUT, replacing each regular expression MATCH
+# with the output when executing `<COMMAND> '<MATCH>'`.
 #
-#
+#   - <COMMAND> is an executable command.
+#   - <REGEX> is a regular expression as interpreted by 'awk'.
+#   - note that when calling <COMMAND>, the argument <MATCH> is wrapped in
+#     single quotes, single quotes within <MATCH> are quoted separately with
+#     double quotes, spaceship style, i.e. MA'TCH => 'MA'"'"'TCH'.
+
+# Note: In some situations, a function may be used for <COMMAND>,
+# provided it has been exported from a bash environment with 'export -f',
+# and provided that /bin/sh is actually bash, as it is for macOS.
+# This functionality is not very well tested.
+
 #--take care editing the header, it's parsed:
-about(){ awk '/^$/{f=1}!f{next}/^.[^ ]/{exit}{print}' "$0" | cut -c3-;}
-usage(){ awk '/Usage/{f=1}!f{next}/^#$/{exit}{print}' "$0" | cut -c3-;}
-version(){ grep -iom1 'sde.*$' "$0" ;}
+# usage uses everything between 'Usage' and the first blank line that follows
+usage(){ <"$0" sed -E '/Usage/,/^ *$/!d;/^ *$/q;s/^#( |$)//' ; }
+# version uses the third field of the first line containing '# sde'
+version(){ awk '/^# *sde/{print $3;exit}' "$0" ; }
 
 die(){ echo "$1"; usage; exit 1;}>&2
 
-case "$1" in -V|--version) version ;; -h|--help) about ;; *)
+case "$1" in -V|--version) version ;; -h|--help) usage ;; *)
 	[[ -n "$2" ]] || die "Missing mandatory arguments."
 	type -t "$2" >/dev/null || die "Command not found: $2"
 	awk -v regex="$1" -v command="$2" '{
