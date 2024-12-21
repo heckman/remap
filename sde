@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Copyright 2024 Erik Ben Heckman <erik@heckman.ca>
 # https://git.heckman.ca/sde  SPDX-License-Identifier: MIT
 

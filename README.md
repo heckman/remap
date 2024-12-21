@@ -2,14 +2,16 @@
 
 Map each regular-expression match with the result of a command.
 
-This script was written for MacOS, but should work on any Unix-like system
-that has `bash` and `perl` installed.
+This script was written for MacOS,
+but should work on any POSIX system with `perl` installed.
 
-It's just a wrapper for a _perl_ one-liner that I can't remember.
+It's just a wrapper for a _perl_ one-liner
+that I can't remember when I need it.
 
-The name `sde` meant something to me once, but I can't remember what anymore.
+The name `sde` meant something to me once,
+but I can't remember what anymore.
 It's likely a play on "sed".
-I'll likely change it to something else at some point
+I'll likely change it to something else at some point.
 
 ## Usage
 
