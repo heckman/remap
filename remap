@@ -1,9 +1,9 @@
 #!/bin/sh
 # Copyright 2024 Erik Ben Heckman <erik@heckman.ca>
-# https://git.heckman.ca/sde  SPDX-License-Identifier: MIT
+# https://git.heckman.ca/sde   SPDX-License-Identifier: MIT
 
 
-# remap  v0.3.0  (formerly sde)
+#  remap  v0.3.0  (formerly sde)
 
 
 # Map each regular-expression match with the result of a command.
